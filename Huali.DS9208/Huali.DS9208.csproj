@@ -143,6 +143,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Huali.Common\Huali.Common.csproj">
+      <Project>{a3fa2a6c-4caa-477b-b780-071fcd6f0d27}</Project>
+      <Name>Huali.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ray.Framework.Config\Ray.Framework.Config.csproj">
       <Project>{ba7cb68d-f2a6-4681-9d35-bd55d405f768}</Project>
       <Name>Ray.Framework.Config</Name>

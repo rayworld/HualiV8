@@ -6,6 +6,8 @@ using System;
 using System.Data;
 using System.Data.OleDb;
 using System.Windows.Forms;
+using Huali.Common;
+using System.Text;
 
 namespace Huali.DS9208
 {
@@ -86,6 +88,21 @@ namespace Huali.DS9208
         /// <param name="e"></param>
         private void ButtonX1_Click(object sender, EventArgs e)
         {
+            //string[] distinctBillNos = CommonProcess.GetDistinctBillNo(dtExcelData, "fbillNo").Split(';');
+
+            //int SuccessCount = 0;
+            //foreach (string BillNo in distinctBillNos)
+            //{
+            //    if (ExistBill(BillNo) == false)
+            //    {
+            //        DataTable dtABill = CommonProcess.FilterData(dtExcelData, "");
+            //        if (dtABill.Rows.Count > 0)
+            //        {
+            //            SuccessCount += InsertBill(dtABill);
+            //        }
+            //    }
+            //}
+            //CustomDesktopAlert.H2(string.Format("共成功导入 {0} 条记录！", SuccessCount.ToString()));
             if (dt.Rows.Count > 0)
             {
                 int recCount = 0;
@@ -130,6 +147,37 @@ namespace Huali.DS9208
         #endregion
 
         #region 私有过程
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dtABill">dtABill</param>
+        /// <returns></returns>
+        private int InsertBill(DataTable dtABill)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.ToString();
+
+            return 0;
+        }
+
+        /// <summary>
+        /// 判断单据是否存在
+        /// </summary>
+        /// <param name="BillNo"></param>
+        /// <returns></returns>
+        private bool ExistBill(string BillNo)
+        {
+            bool retVal = false;
+            sql = string.Format("Select Count(*) From [icstock] WHERE [单据编号] = '" + BillNo + "'");
+            object obj = SqlHelper.ExecuteScalar(conn, sql);
+            //如果该单据在云上没有记录
+            if (obj != null && int.Parse(obj.ToString()) < 1)
+            {
+                retVal = true;
+            }
+            return retVal;
+        }
 
         /// <summary>
         /// 将Excel文件转成DataTable
@@ -216,8 +264,4 @@ namespace Huali.DS9208
 
         public string 产品编号 { get; set; }
     }          
-}              
-               
-               
-               
-               
+}  

@@ -334,9 +334,13 @@ namespace Huali
         }
 
 
+
         #endregion
 
+        private void NavTabControl_SelectedTabChanged(object sender, SuperTabStripSelectedTabChangedEventArgs e)
+        {
 
+        }
     }
     public enum ModuleName
     {

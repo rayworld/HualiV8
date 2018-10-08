@@ -2,6 +2,7 @@
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
 using Ray.Framework.Encrypt;
+using Huali.Common;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -42,7 +43,7 @@ namespace Huali.DS9208
                 dataGridViewX1.Rows.Clear();
                 dataGridViewX1.Columns.Clear();
                 //单据编号为数字
-                if (!string.IsNullOrEmpty(textBoxX1.Text) && IsNumber(textBoxX1.Text))
+                if (!string.IsNullOrEmpty(textBoxX1.Text) && CommonProcess.IsNumber(textBoxX1.Text))
                 {
                     //清空二维码列表，
                     mingQRCodes = "";
@@ -162,7 +163,7 @@ namespace Huali.DS9208
                         return;
                     }
 
-                    if (IsNumber(mingQRCode) == false)
+                    if (CommonProcess.IsNumber(mingQRCode) == false)
                     {
                         CustomDesktopAlert.H2("二维码未能正确识别！");
                         return;
@@ -245,17 +246,6 @@ namespace Huali.DS9208
 
         #region 私有过程
 
-        /// <summary>  
-        /// 判读字符串是否为数值型
-        /// </summary>  
-        /// <param name="strNumber">字符串</param>  
-        /// <returns>是否</returns>  
-        public static bool IsNumber(string strNumber)
-        {
-            System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"^-?\d+\.?\d*$");
-            return r.IsMatch(strNumber);
-        }
-
         #region Unused
         ///// <summary>
         ///// 
@@ -287,13 +277,13 @@ namespace Huali.DS9208
         //}
         #endregion
     
-    /// <summary>
-    /// 更新主表数量
-    /// </summary>
-    /// <param name="BillNoEntryID">订单号/分录号</param>
-    /// <param name="Qty">数量</param>
-    /// <returns></returns>
-    public int UpdateCloudQty(string BillNoEntryID, int Qty)
+        /// <summary>
+        /// 更新主表数量
+        /// </summary>
+        /// <param name="BillNoEntryID">订单号/分录号</param>
+        /// <param name="Qty">数量</param>
+        /// <returns></returns>
+        public int UpdateCloudQty(string BillNoEntryID, int Qty)
         {            
             string billNo = BillNoEntryID.Substring(0, 10);
             string entryID = int.Parse(BillNoEntryID.Substring(10, 4)).ToString();
@@ -313,13 +303,13 @@ namespace Huali.DS9208
             dtAllData = AccessHelper.ExecuteDataTable(connAccess, "SELECT [FCodeID],[FQRCode], [FBillNoEntryId] FROM T_QRCODE");
             
             //得到唯一的单据行号
-            string[] DistinctBillNo = GetDistinctBillNo(dtAllData, "FBillNoEntryId").Split(';');
+            string[] DistinctBillNo = CommonProcess.GetDistinctBillNo(dtAllData, "FBillNoEntryId").Split(';');
             
             //对每一行进行处理
             foreach (string billNo in DistinctBillNo)
             {
                 //过滤只留下一行数据
-                DataTable dtFilteredData = FilterData(dtAllData, "FBillNoEntryId = '" + billNo + "'");
+                DataTable dtFilteredData = CommonProcess.FilterData(dtAllData, "FBillNoEntryId = '" + billNo + "'");
 
                 //生成插入语句
                 sql = BuildDetailSql(dtFilteredData);
@@ -361,8 +351,6 @@ namespace Huali.DS9208
                     CustomDesktopAlert.H2("保存数据出错！");
                 }
             }
-
-
         }
 
         /// <summary>
@@ -383,22 +371,22 @@ namespace Huali.DS9208
         /// 生成测试用数据
         /// </summary>
         /// <returns></returns>
-        private DataTable BuildTestData()
-        {
-            DataTable retDataTable = new DataTable();
-            retDataTable.Columns.Add("mingQRCode", Type.GetType("System.String"));
-            retDataTable.Columns.Add("EntryID", System.Type.GetType("System.String"));
+        //private DataTable BuildTestData()
+        //{
+        //    DataTable retDataTable = new DataTable();
+        //    retDataTable.Columns.Add("mingQRCode", Type.GetType("System.String"));
+        //    retDataTable.Columns.Add("EntryID", System.Type.GetType("System.String"));
 
-            for (int i = 0; i < 3; i++)
-            {
-                DataRow dr = retDataTable.NewRow();
-                dr["mingQRCode"] = "180000206";
-                dr["entryID"] = "QOUT0114170001";
-                retDataTable.Rows.Add(dr);
-            }
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        DataRow dr = retDataTable.NewRow();
+        //        dr["mingQRCode"] = "180000206";
+        //        dr["entryID"] = "QOUT0114170001";
+        //        retDataTable.Rows.Add(dr);
+        //    }
 
-            return retDataTable;
-        }
+        //    return retDataTable;
+        //}
 
         /// <summary>
         /// 生成插入明细表的SQL语句
@@ -439,49 +427,6 @@ namespace Huali.DS9208
             sql = string.Format("INSERT INTO [{0}] ([FQRCode],[FBillNoEntryID]) VALUES('{1}','{2}')", tableName, mingQRCode, EntryNo);
             int retInt = AccessHelper.ExecuteNonQuery(connAccess, sql);
             return retInt;
-        }
-
-        /// <summary>
-        /// 得到唯一的单号列表
-        /// </summary>
-        /// <param name="dt">数据表</param>
-        /// <param name="billNoFieldName">单号列的名字</param>
-        /// <returns></returns>
-        private string GetDistinctBillNo(DataTable dt, string billNoFieldName)
-        {
-            string tempBillNo = "";
-            string billNo = "";
-            string retVal = "";
-
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                billNo = dt.Rows[i][billNoFieldName].ToString();
-                if (billNo != tempBillNo)
-                {
-                    retVal += billNo + ";";
-                    tempBillNo = billNo;
-                }
-            }
-
-            //去掉最后一个分号
-            return retVal.Substring(0, retVal.Length - 1);
-        }
-
-        /// <summary>
-        /// 过滤不同单据类型
-        /// </summary>
-        /// <param name="dt">Excel 数据表</param>
-        /// <param name="where">条件</param>
-        /// <returns></returns>
-        private DataTable FilterData(DataTable dt, string where)
-        {
-            DataRow[] rows = dt.Select(where);
-            DataTable tmpdt = dt.Clone();
-            foreach (DataRow row in rows)  // 将查询的结果添加到tempdt中； 
-            {
-                tmpdt.Rows.Add(row.ItemArray);
-            }
-            return tmpdt;
         }
 
         #endregion
