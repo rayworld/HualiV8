@@ -1,8 +1,8 @@
 ﻿using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
 using Ray.Framework.Encrypt;
-using Huali.Common;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -26,8 +26,19 @@ namespace Huali.DS9208
         public static string Data_Source = AppDomain.CurrentDomain.BaseDirectory + "QRCode1.accdb";
         private static readonly string connAccess = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source="+ Data_Source + ";Persist Security Info=False;";
         DataTable dt = (DataTable)null;
-       
+
         #region 事件
+
+        /// <summary>
+        /// 手动上传
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonX2_Click(object sender, EventArgs e)
+        {
+            //上传数据
+            UpdateQRCode2AliCloud();
+        }
         /// <summary>                                                                           
         /// 用户输入新的出库单号并确认
         /// </summary>
@@ -122,6 +133,11 @@ namespace Huali.DS9208
             textBoxItem1.Focus();
         }
 
+        /// <summary>
+        /// 扫描
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBoxItem1_KeyDown(object sender, KeyEventArgs e)
         {
             //用户按下回车键
@@ -278,7 +294,7 @@ namespace Huali.DS9208
         #endregion
     
         /// <summary>
-        /// 更新主表数量
+        /// 更新云数据
         /// </summary>
         /// <param name="BillNoEntryID">订单号/分录号</param>
         /// <param name="Qty">数量</param>
@@ -301,55 +317,76 @@ namespace Huali.DS9208
             //取得所有的缓存数据
             DataTable dtAllData = new DataTable();
             dtAllData = AccessHelper.ExecuteDataTable(connAccess, "SELECT [FCodeID],[FQRCode], [FBillNoEntryId] FROM T_QRCODE");
-            
-            //得到唯一的单据行号
-            string[] DistinctBillNo = CommonProcess.GetDistinctBillNo(dtAllData, "FBillNoEntryId").Split(';');
-            
-            //对每一行进行处理
-            foreach (string billNo in DistinctBillNo)
+
+            if (dtAllData.Rows.Count > 0)
             {
-                //过滤只留下一行数据
-                DataTable dtFilteredData = CommonProcess.FilterData(dtAllData, "FBillNoEntryId = '" + billNo + "'");
+                //得到唯一的单据行号
+                string[] DistinctBillNo = CommonProcess.GetDistinctBillNo(dtAllData, "FBillNoEntryId").Split(';');
 
-                //生成插入语句
-                sql = BuildDetailSql(dtFilteredData);
-
-                //写入云
-                int ret = SqlHelper.ExecuteNonQuery(connALiClouds, sql);
-
-                //如果返回值等于一行数据的个数，表示该行数据已经到云
-                if (ret == dtFilteredData.Rows.Count)
+                if (DistinctBillNo.Length > 0)
                 {
-                    // 更新主表中已扫个数
-                    string billNoEntryID = dtFilteredData.Rows[0]["FBillNoEntryId"].ToString();
-                    int retUpdateQty = UpdateCloudQty(billNoEntryID, ret);
-                    //更新成功
-                    if (retUpdateQty > 0)
+                    //对每一行进行处理
+                    foreach (string billNo in DistinctBillNo)
                     {
-                        //删除ACCESS数据库中的该行数据
-                        sql = string.Format("Delete from t_QRCode where FBillNoEntryId = '{0}'" , billNoEntryID);
-                        int retInt = AccessHelper.ExecuteNonQuery(connAccess, sql);
-                        if (retInt == ret)
+                        //过滤只留下一行数据
+                        DataTable dtFilteredData = CommonProcess.FilterData(dtAllData, "FBillNoEntryId = '" + billNo + "'");
+
+                        if (dtFilteredData.Rows.Count > 0)
                         {
-                            //删除成功，则是上传成功
-                            CustomDesktopAlert.H2("数据上传成功！");
+                            //生成插入语句
+                            sql = BuildDetailSql(dtFilteredData);
+
+                            //写入云
+                            int ret = SqlHelper.ExecuteNonQuery(connALiClouds, sql);
+
+                            //如果返回值等于一行数据的个数，表示该行数据已经到云
+                            if (ret == dtFilteredData.Rows.Count)
+                            {
+                                // 更新主表中已扫个数
+                                string billNoEntryID = dtFilteredData.Rows[0]["FBillNoEntryId"].ToString();
+                                int retUpdateQty = UpdateCloudQty(billNoEntryID, ret);
+                                //更新成功
+                                if (retUpdateQty > 0)
+                                {
+                                    //删除ACCESS数据库中的该行数据
+                                    sql = string.Format("Delete from t_QRCode where FBillNoEntryId = '{0}'", billNoEntryID);
+                                    int retInt = AccessHelper.ExecuteNonQuery(connAccess, sql);
+                                    if (retInt == ret)
+                                    {
+                                        //删除成功，则是上传成功
+                                        CustomDesktopAlert.H2("数据上传成功！");
+                                    }
+                                    else
+                                    {
+                                        //删除失败，则是上传失败
+                                        CustomDesktopAlert.H2("数据未能全部上传！");
+                                    }
+                                }
+                                else
+                                {
+                                    //更新个数失败
+                                    CustomDesktopAlert.H2("更新主表失败！");
+                                }
+                            }
+                            else
+                            {
+                                CustomDesktopAlert.H2("缓存中无数据");
+                            }
                         }
                         else
                         {
-                            //删除失败，则是上传失败
-                            CustomDesktopAlert.H2("数据上传失败！");
+                            CustomDesktopAlert.H2("保存数据出错！");
                         }
                     }
-                    else
-                    {
-                        //更新个数失败
-                        CustomDesktopAlert.H2("更新主表失败！");
-                    }                    
                 }
                 else
                 {
-                    CustomDesktopAlert.H2("保存数据出错！");
+                    CustomDesktopAlert.H2("缓存中的单号列表为空");
                 }
+            }
+            else
+            {
+                CustomDesktopAlert.H2("缓存中无数据");
             }
         }
 
@@ -430,5 +467,6 @@ namespace Huali.DS9208
         }
 
         #endregion
+
     }
 }
