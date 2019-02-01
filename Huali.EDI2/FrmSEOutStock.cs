@@ -6,6 +6,12 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 
+/// <summary>
+/// 更新日志：
+/// 版本：V8.0.0.0 
+/// 日期：2019-02-01 
+/// 描述：应华理需求，将订单星创订单中的单价全部置0；5p单已经是0
+/// </summary>
 namespace Huali.EDI2
 {
     public partial class FrmSEOutStock : Office2007Form
@@ -399,7 +405,8 @@ namespace Huali.EDI2
                             int stockId = int.Parse(tmpdt.Rows[i]["仓库"].ToString());
                             int qty = int.Parse(tmpdt.Rows[i]["赠品"].ToString());
                             Huali.EDI2.DAL.T_ICItem dicitem = new EDI2.DAL.T_ICItem();
-                            decimal price = dicitem.GetSalePriceByFItemID(itemId);
+                            //decimal price = dicitem.GetSalePriceByFItemID(itemId);
+                            decimal price = 0;
                             int unitid = dicitem.GetUnitIDByitemID(itemId);
 
                             Huali.EDI2.Models.SEOutStockEntry mSaleEntry = BuildSaleEntryModel(interId, entryId, itemId, stockId, qty, price, 0, 0, 0, 0, 0, 0, 40384, 40526, unitid);
@@ -555,7 +562,8 @@ namespace Huali.EDI2
                             int qty = int.Parse(tmpdt.Rows[i]["数量"].ToString());
                             //int cxType = int.Parse(tmpdt.Rows[i]["促销类别"].ToString());
                             Huali.EDI2.DAL.T_ICItem dicitem = new EDI2.DAL.T_ICItem();
-                            decimal price = dicitem.GetSalePriceByFItemID(itemId);
+                            //decimal price = dicitem.GetSalePriceByFItemID(itemId);
+                            decimal price = 0;
                             int unitid = dicitem.GetUnitIDByitemID(itemId);
 
                             Huali.EDI2.Models.SEOutStockEntry mSaleEntry = BuildSaleEntryModel(interId, entryId, itemId, stockId, qty, price, 0, 0, 0, 0, 0, 0, 40384, 40470,unitid);
