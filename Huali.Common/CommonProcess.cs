@@ -1,4 +1,7 @@
 ﻿using System.Data;
+using Ray.Framework.DBUtility;
+using System.Configuration;
+using Ray.Framework.Config;
 
 namespace Huali.Common
 {
@@ -57,6 +60,17 @@ namespace Huali.Common
         {
             System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"^-?\d+\.?\d*$");
             return r.IsMatch(strNumber);
+        }
+
+        /// <summary>
+        /// 统一管理应用的数据库连接
+        /// </summary>
+        /// <returns>数据库连接字符串</returns>
+        public static string GetAppSettingConString()
+        {
+            string Modules = ConfigHelper.ReadValueByKey(ConfigHelper.ConfigurationFile.AppConfig, "Modules");
+            string ConnectionName = Modules.IndexOf("9208") > 0 ? "ALiCloud" : "DS9209";
+            return SqlHelper.GetConnectionString(ConnectionName);   
         }
 
     }

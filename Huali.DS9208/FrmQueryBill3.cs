@@ -1,4 +1,5 @@
 using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
 using System;
@@ -7,6 +8,10 @@ using System.Windows.Forms;
 
 namespace Huali.DS9208
 {
+    /// <summary>
+    /// 合并镜片/护理液程序
+    /// 
+    /// </summary>
     public partial class FrmQueryBill3 : Office2007Form
     {
         public FrmQueryBill3()
@@ -15,7 +20,7 @@ namespace Huali.DS9208
         }
         string sql = "";
         DataTable dt = new DataTable();
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
 
 
         private void ButtonX1_Click(object sender, EventArgs e)

@@ -169,7 +169,6 @@
             this.DoubleBuffered = true;
             this.Name = "FrmQueryByQRCode";
             this.Text = "Form4";
-            this.Load += new System.EventHandler(this.FrmQueryByQRCode_Load);
             this.panelEx1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewX1)).EndInit();
             this.ResumeLayout(false);

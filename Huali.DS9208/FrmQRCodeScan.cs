@@ -21,7 +21,7 @@ namespace Huali.DS9208
 
         string mingQRCodes = "";
         string sql = "";
-        private static readonly string connALiClouds = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
         //private static readonly string connTest = SqlHelper.GetConnectionString("AliTest");
         public static string Data_Source = AppDomain.CurrentDomain.BaseDirectory + "QRCode1.accdb";
         private static readonly string connAccess = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source="+ Data_Source + ";Persist Security Info=False;";
@@ -64,20 +64,20 @@ namespace Huali.DS9208
                     //收到单据分录信息
                     //int recCount = int.Parse(SqlHelper.GetSingle("select count(*) from icstock where [单据编号] ='" + billNo + "' and [FActQty] < [实发数量]",null).ToString());
                     sql = string.Format("SELECT COUNT(*) FROM icstock WHERE [单据编号] ='{0}' AND [FActQty] < [实发数量]", billNo);
-                    object obj = SqlHelper.ExecuteScalar(connALiClouds, sql);
+                    object obj = SqlHelper.ExecuteScalar(conn, sql);
                     int recCount = obj != null ? int.Parse(obj.ToString()) : 0;
                     if (recCount > 0)
                     {
                         //DataTable dtmaster = SqlHelper.ExcuteDataTable("select top 1 [日期],[购货单位],[发货仓库],[摘要] from icstock where [单据编号] ='" + billNo + "' and [FActQty] < [实发数量]");
                         sql = string.Format("SELECT TOP 1 [日期],[购货单位],[发货仓库],[摘要] FROM icstock WHERE [单据编号] ='{0}' AND [FActQty] < [实发数量]", billNo);
-                        DataTable dtmaster = SqlHelper.ExecuteDataTable(connALiClouds, sql);
+                        DataTable dtmaster = SqlHelper.ExecuteDataTable(conn, sql);
                         textBoxX2.Text = dtmaster.Rows[0][0].ToString();
                         textBoxX3.Text = dtmaster.Rows[0][1].ToString();
                         textBoxX4.Text = dtmaster.Rows[0][2].ToString();
 
                         //dt = SqlHelper.ExcuteDataTable("select [fEntryID] as 分录号,[产品名称],[批号],[实发数量] as 应发,[FActQty] as 实发  from icstock where [单据编号] ='" + billNo + "' and [FActQty] < [实发数量] order by fEntryID");
                         sql = string.Format("SELECT [fEntryID] AS 分录号,[产品名称],[批号],[实发数量] AS 应发,[FActQty] AS 实发  FROM icstock WHERE [单据编号] ='{0}' AND [FActQty] < [实发数量] ORDER BY fEntryID", billNo);
-                        dt = SqlHelper.ExecuteDataTable(connALiClouds, sql);
+                        dt = SqlHelper.ExecuteDataTable(conn, sql);
                         dataGridViewX1.DataSource = dt;
                         DataGridViewCheckBoxColumn newColumn = new DataGridViewCheckBoxColumn
                         {
@@ -306,7 +306,7 @@ namespace Huali.DS9208
 
             //return SqlHelper.ExecuteSql("UPDATE [icstock] SET [FActQty] = [FActQty] + 1 WHERE  [单据编号] = '" + billNo + "' and  [FEntryID] =" + EntryID);
             sql = string.Format("UPDATE [icstock] SET [FActQty] = [FActQty] + {0} WHERE  [单据编号] = '{1}' AND [FEntryID] = {2}" , Qty, billNo, entryID);
-            return SqlHelper.ExecuteNonQuery(connALiClouds, sql);
+            return SqlHelper.ExecuteNonQuery(conn, sql);
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace Huali.DS9208
                             sql = BuildDetailSql(dtFilteredData);
 
                             //写入云
-                            int ret = SqlHelper.ExecuteNonQuery(connALiClouds, sql);
+                            int ret = SqlHelper.ExecuteNonQuery(conn, sql);
 
                             //如果返回值等于一行数据的个数，表示该行数据已经到云
                             if (ret == dtFilteredData.Rows.Count)

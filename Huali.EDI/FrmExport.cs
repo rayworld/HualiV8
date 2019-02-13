@@ -5,7 +5,11 @@ using System.Data;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-
+/// <summary>
+/// 更新日志
+/// 时间 2019-02-02
+/// 内容 对日期选择框的结果进行格式化，以免查询报错
+/// </summary>
 namespace Huali.EDI
 {
     public partial class FrmExport : Office2007Form
@@ -42,7 +46,10 @@ namespace Huali.EDI
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            DoExport(this.dateTimePicker1.Value.ToShortDateString());
+            //DoExport(this.dateTimePicker1.Value.ToShortDateString());
+            string queryDate = dateTimePicker1.Value.ToString("yyyy-MM-dd");
+            DoExport(queryDate);
+
         }
         #endregion
 

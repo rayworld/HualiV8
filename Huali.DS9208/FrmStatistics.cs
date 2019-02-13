@@ -1,7 +1,7 @@
 ﻿using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
-using Ray.Framework.Encrypt;
 using System;
 using System.Data;
 using System.Windows.Forms;
@@ -17,8 +17,7 @@ namespace Huali.DS9208
 
         private string sql = "";
         string Procedure_Name = "CreateOrUpdateQrcodeCounter";
-        //string Connection_Name = "ALiClouds";
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
 
 
         /// <summary>

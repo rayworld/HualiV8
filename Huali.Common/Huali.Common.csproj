@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,6 +44,16 @@
   <ItemGroup>
     <Compile Include="CommonProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ray.Framework.Config\Ray.Framework.Config.csproj">
+      <Project>{BA7CB68D-F2A6-4681-9D35-BD55D405F768}</Project>
+      <Name>Ray.Framework.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ray.Framework.DBUtility\Ray.Framework.DBUtility.csproj">
+      <Project>{154cb011-3414-4ec5-a452-18d8936a17a6}</Project>
+      <Name>Ray.Framework.DBUtility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

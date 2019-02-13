@@ -1,4 +1,5 @@
 ﻿using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
 using Ray.Framework.Encrypt;
@@ -14,7 +15,7 @@ namespace Huali.DS9208
             InitializeComponent();
         }
 
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
 
 
         private void TextBoxX2_KeyDown(object sender, KeyEventArgs e)

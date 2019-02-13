@@ -1,4 +1,5 @@
 ﻿using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
 using Ray.Framework.Encrypt;
@@ -18,7 +19,7 @@ namespace Huali.DS9208
         }
         DataTable dt = new DataTable();
         string sql = "";
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
 
         /// <summary>
         /// 

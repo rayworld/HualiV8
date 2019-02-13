@@ -243,20 +243,25 @@ namespace Huali
                 string[] myModule = myModules.Split(';');
                 foreach (string module in myModule)
                 {
-                    if (module.ToLower() == ModuleName.edi.ToString())
+                    if (module.ToLower() == ModuleName.EDI.ToString().ToLower())
                     {
-                        ribbonTabItem2.Visible = true;
-                        ribbonTabItem2.Select();
+                        rtiEDI.Visible = true;
+                        rtiEDI.Select();
                     }
-                    else if (module.ToLower() == ModuleName.edi2.ToString())
+                    else if (module.ToLower() == ModuleName.EDI2.ToString().ToLower())
                     {
-                        ribbonTabItem1.Visible = true;
-                        ribbonTabItem1.Select();
+                        rtiEDI2.Visible = true;
+                        rtiEDI2.Select();
                     }
-                    else if (module.ToLower() == ModuleName.ds9208_镜片.ToString())
+                    else if (module.ToLower() == ModuleName.DS9208.ToString().ToLower())
                     {
-                        ribbonTabItem3.Visible = true;
-                        ribbonTabItem3.Select();
+                        rti9208.Visible = true;
+                        rti9208.Select();
+                    }
+                    else if (module.ToLower() == ModuleName.DS9209.ToString().ToLower())
+                    {
+                        rti9209.Visible = true;
+                        rti9209.Select();
                     }
                     else
                     {
@@ -337,17 +342,70 @@ namespace Huali
 
         #endregion
 
-        private void NavTabControl_SelectedTabChanged(object sender, SuperTabStripSelectedTabChangedEventArgs e)
-        {
+        #region DS9209
 
+        private void ButtonItem41_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("生成二维码", typeof(FrmBuildQRCode));
         }
+
+        private void ButtonItem40_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("扫描二维码", typeof(FrmQRCodeScan));
+        }
+
+        private void ButtonItem35_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("按订单查询", typeof(FrmQueryByBill));
+        }
+
+        private void ButtonItem36_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("按二维码查询", typeof(FrmQueryByQRCode));
+        }
+
+        private void buttonItem37_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("所有扫过码的单", typeof(FrmQueryFinishedBill));
+        }
+
+        private void buttonItem38_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("单据完成情况", typeof(FrmQueryBill3));
+        }
+
+        private void buttonItem39_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("查询核销状态", typeof(FrmQueryCheckState));
+        }
+
+        private void buttonItem34_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("导入单据", typeof(FrmImportBill));
+        }
+
+        private void buttonItem32_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("删除单据", typeof(FrmDeleteByBill));
+        }
+
+        private void buttonItem33_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("删除二维码", typeof(FrmDeleteByQRCode));
+        }
+
+        private void buttonItem42_Click(object sender, EventArgs e)
+        {
+            SetMdiForm("二维码统计", typeof(FrmStatistics));
+        }
+        #endregion
     }
     public enum ModuleName
     {
-        edi,
-        edi2,
-        ds9208_镜片,
-        ds9208_护理液,
+        EDI,
+        EDI2,
+        DS9208,
+        DS9209,
         checkmailstat,
     }
 }

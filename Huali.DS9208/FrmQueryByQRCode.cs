@@ -1,4 +1,5 @@
 ﻿using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
 using Ray.Framework.Encrypt;
@@ -17,7 +18,7 @@ namespace Huali.DS9208
         DataTable dt = new DataTable();
         string mingQRCode = "";
         string sql = "";
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
 
         /// <summary>
         /// 查询
@@ -55,11 +56,6 @@ namespace Huali.DS9208
             {
                 CustomDesktopAlert.H2("无效的二维码！" );
             }
-        }
-
-        private void FrmQueryByQRCode_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

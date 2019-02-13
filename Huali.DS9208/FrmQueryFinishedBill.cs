@@ -1,4 +1,5 @@
 using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
 using System;
@@ -18,7 +19,7 @@ namespace Huali.DS9208
 
         string sql = "";
         DataTable dt = new DataTable();
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
 
 
         private void ButtonX1_Click(object sender, EventArgs e)

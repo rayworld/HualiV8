@@ -212,7 +212,17 @@ namespace Huali.EDI2.DAL
             return 0;
         }
 
-
+        /// <summary>
+        /// 客户编号得到业务员编号
+        /// </summary>
+        /// <param name="fNumber"></param>
+        /// <returns>客户编号/门店编号</returns>
+        public int GetEmpIDByStoreID(int fStoreId)
+        {
+            string sql = string.Format("SELECT Femployee FROM t_Organization WHERE fItemID = '{0}'", fStoreId);
+            object obj = SqlHelper.ExecuteScalar(conn, sql);
+            return obj != null ? int.Parse(obj.ToString()) : 0;
+        }
         #endregion
 
     }

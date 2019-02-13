@@ -11,6 +11,9 @@ using System.Text;
 
 namespace Huali.DS9208
 {
+    /// <summary>
+    /// 合并镜片/护理液程序
+    /// </summary>
     public partial class FrmImportBill : Office2007Form
     {
         public FrmImportBill()
@@ -24,7 +27,7 @@ namespace Huali.DS9208
         string FCustomId = "FCustomId";
         string FStoreId = "FStoreId";
         string FProductId = "FProductId";
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
 
 
         #region 事件

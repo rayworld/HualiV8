@@ -1,4 +1,5 @@
 ﻿using DevComponents.DotNetBar;
+using Huali.Common;
 using Ray.Framework.Config;
 using Ray.Framework.CustomDotNetBar;
 using Ray.Framework.DBUtility;
@@ -8,6 +9,11 @@ using System.Windows.Forms;
 
 namespace Huali.DS9208
 {
+    /// <summary>
+    /// 合并镜片/护理液程序
+    /// 只显示和删除“XOUT”/“QOUT”类型单据
+    /// 产品类型强制成大写“DS9208”/“DS9209”
+    /// </summary>
     public partial class FrmDeleteByBill : Office2007Form
     {
 
@@ -15,7 +21,7 @@ namespace Huali.DS9208
         {
             InitializeComponent();
         }
-        private static readonly string conn = SqlHelper.GetConnectionString("ALiClouds");
+        private static readonly string conn = CommonProcess.GetAppSettingConString();
         string sql = "";
         
         private void Form8_Load(object sender, EventArgs e)
@@ -81,24 +87,24 @@ namespace Huali.DS9208
         }
 
         /// <summary>
-        /// 
+        /// 循环所有数据表，找到对应数据删除
         /// </summary>
-        /// <param name="EntryID"></param>
-        /// <returns></returns>
+        /// <param name="EntryID">分录号</param>
+        /// <returns>删除成功的条数</returns>
         private int DeleteDetailTable(string EntryID)
         {
             int retVal = 0;
             string[] prodT = null;
-            string prodType0 = "17";
-            string prodType1 = "16;18";
+            //string prodType0 = "17";
+            //string prodType1 = "16;18";
             string confProdType = ConfigHelper.ReadValueByKey(ConfigHelper.ConfigurationFile.AppConfig, "Modules");
-            if (confProdType == EnumProductType.ds9208_护理液.ToString())
+            if (confProdType == EnumProductType.DS9209.ToString())
             {
-                prodT = prodType0.Split(';');
+                prodT = "17".Split(';');
             }
-            else if (confProdType == EnumProductType.ds9208_镜片.ToString())
+            else if (confProdType == EnumProductType.DS9208.ToString())
             {
-                prodT = prodType1.Split(';');
+                prodT = "16;18".Split(';');
             }
             else
             {
@@ -119,5 +125,5 @@ namespace Huali.DS9208
             return retVal;
         }
     }
-    public enum EnumProductType { ds9208_护理液, ds9208_镜片, }
+    public enum EnumProductType { DS9209, DS9208, }
 }

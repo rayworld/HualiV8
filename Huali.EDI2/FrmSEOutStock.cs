@@ -274,7 +274,8 @@ namespace Huali.EDI2
             int storeId = int.Parse(dt.Rows[0]["门店编号"].ToString());
             string productName = dt.Rows[0]["补货产品名称"].ToString();
             string explanation = string.Format("免费品 {0} 2+1+1", productName);
-            Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20303, 40394, 15326);
+            int empId = dSale.GetEmpIDByStoreID(storeId);
+            Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20303, 40394, 15326,empId);
             try
             {
                 if (dSale.InsertBill(mSale) == true)
@@ -388,7 +389,8 @@ namespace Huali.EDI2
                 int storeId = int.Parse(tmpdt.Rows[0]["门店代码"].ToString());
                 string productName = tmpdt.Rows[0]["收货方部门"].ToString();
                 string explanation = string.Format("随货赠送 {0}", productName);
-                Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20303, 40394, 15322);
+                int empId = dSale.GetEmpIDByStoreID(storeId);
+                Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20303, 40394, 15322,empId);
                 try
                 {
                     if (dSale.InsertBill(mSale) == true)
@@ -465,7 +467,8 @@ namespace Huali.EDI2
                 int storeId = int.Parse(tmpdt.Rows[0]["门店代码"].ToString());
                 string productName = tmpdt.Rows[0]["收货方部门"].ToString();
                 string explanation = string.Format("随货赠送卓效 {0}", productName);
-                Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20303, 40393, 15326);
+                int empId = dSale.GetEmpIDByStoreID(storeId);
+                Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20303, 40393, 15326,empId);
                 try
                 {
                     if (dSale.InsertBill(mSale) == true)
@@ -543,8 +546,9 @@ namespace Huali.EDI2
                 int storeId = int.Parse(tmpdt.Rows[0]["门店代码"].ToString());
                 string productName = tmpdt.Rows[0]["收货方部门"].ToString();
                 //string explanation = string.Format("补货 {0}", productName);
-                string explanation = string.Format("{0}", productName);    
-                Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20302, null, 15322);
+                string explanation = string.Format("{0}", productName);
+                int empId = dSale.GetEmpIDByStoreID(storeId);
+                Huali.EDI2.Models.SEOutStock mSale = BuildSaleModel(interId, billNo, storeId, explanation, sourceBillNo, custId, 20302, null, 15322,empId);
                 try
                 {
                     if (dSale.InsertBill(mSale) == true)
@@ -704,7 +708,7 @@ namespace Huali.EDI2
         /// <param name="HeadSelfS0238">2048.2000</param>
         /// <param name="HeadSelfS0239">sp.so</param>
         /// <returns></returns>i
-        private Huali.EDI2.Models.SEOutStock BuildSaleModel(int interId, string billNo, int storeId, string explanation, string sourceBillNo, int customId, int areaPS, int? HeadSelfS0238, int HeadSelfS0239)
+        private Huali.EDI2.Models.SEOutStock BuildSaleModel(int interId, string billNo, int storeId, string explanation, string sourceBillNo, int customId, int areaPS, int? HeadSelfS0238, int HeadSelfS0239, int EmpId)
         {
             //公共当前日期
             DateTime currDate = DateTime.Now.Date;
@@ -722,7 +726,7 @@ namespace Huali.EDI2
             mSale.FStockID = null;
             mSale.FAdd = null;
             mSale.FNote = null;
-            mSale.FEmpID = 39426;
+            mSale.FEmpID = EmpId;
             mSale.FCheckerID = null;
             mSale.FBillerID = 16454;
             mSale.FManagerID = 0;
